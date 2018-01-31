@@ -12,6 +12,8 @@ import android.util.Log;
 import java.util.List;
 
 import nyc.c4q.unit5finalassessment.model.LineStatus;
+import nyc.c4q.unit5finalassessment.services.database.MtaStatusDbService;
+import nyc.c4q.unit5finalassessment.services.database.MtaStatusDbServiceSQLite;
 import nyc.c4q.unit5finalassessment.services.network.SimpleMtaStatusNetworkSvc;
 import nyc.c4q.unit5finalassessment.services.network.MtaStatusNetworkSvc;
 
@@ -42,8 +44,18 @@ public class MainActivity extends AppCompatActivity {
                 MtaStatusNetworkSvc networkService = new SimpleMtaStatusNetworkSvc();
                 List<LineStatus> lineStatuses = networkService.getLineStatuses();
                 for (LineStatus lineStatus : lineStatuses) {
-                    Log.d(TAG, "doInBackground: " + lineStatus.getName() + " " + lineStatus.getStatus());
+                    Log.d(TAG, "doInBackground: from network: " + lineStatus.getName() + " " + lineStatus.getStatus());
                 }
+
+                MtaStatusDbService dbService = MtaStatusDbServiceSQLite.getInstance(MainActivity.this);
+                dbService.updateLineStatuses(lineStatuses);
+                // Make sure data can be saved in db and successfully retrieved
+                List<LineStatus> lineStatusesFromDb = dbService.getLineStatuses();
+
+                for (LineStatus lineStatus : lineStatusesFromDb) {
+                    Log.d(TAG, "doInBackground: from db: " + lineStatus.getName() + " " + lineStatus.getStatus());
+                }
+
                 return null;
             }
         }.execute();
