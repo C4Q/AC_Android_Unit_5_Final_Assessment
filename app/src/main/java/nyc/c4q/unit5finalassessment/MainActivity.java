@@ -4,9 +4,16 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+
+import java.util.List;
+
+import nyc.c4q.unit5finalassessment.model.LineStatus;
+import nyc.c4q.unit5finalassessment.services.network.SimpleMtaStatusNetworkSvc;
+import nyc.c4q.unit5finalassessment.services.network.MtaStatusNetworkSvc;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,5 +35,18 @@ public class MainActivity extends AppCompatActivity {
         if (jobScheduler != null) {
             jobScheduler.schedule(jobInfo);
         }
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                MtaStatusNetworkSvc networkService = new SimpleMtaStatusNetworkSvc();
+                List<LineStatus> lineStatuses = networkService.getLineStatuses();
+                for (LineStatus lineStatus : lineStatuses) {
+                    Log.d(TAG, "doInBackground: " + lineStatus.getName() + " " + lineStatus.getStatus());
+                }
+                return null;
+            }
+        }.execute();
+
     }
 }
