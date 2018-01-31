@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
                 List<LineStatus> lineStatusesFromDb = dbService.getLineStatuses();
 
                 for (LineStatus lineStatus : lineStatusesFromDb) {
-                    Log.d(TAG, "doInBackground: from db: " + lineStatus.getName() + " " + lineStatus.getStatus());
+                    Log.d(TAG, "doInBackground: from db: " + lineStatus.getName() + " " +
+                            lineStatus.getStatus() + " " +
+                            lineStatus.getFormattedDateTime("M/d/yy h:mma"));
                 }
 
                 return null;
