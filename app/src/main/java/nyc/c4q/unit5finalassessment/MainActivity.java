@@ -31,36 +31,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: hello from thread " + Thread.currentThread().getName());
 
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        JobInfo jobInfo = new JobInfo.Builder(SAMPLE_JOB_ID, new ComponentName(this, SampleJobService.class))
+        JobInfo jobInfo = new JobInfo.Builder(SAMPLE_JOB_ID,
+                new ComponentName(this, SampleJobService.class))
                 .setMinimumLatency(3000)
                 .build();
         if (jobScheduler != null) {
             jobScheduler.schedule(jobInfo);
         }
-
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                MtaStatusNetworkSvc networkService = new SimpleMtaStatusNetworkSvc();
-                List<LineStatus> lineStatuses = networkService.getLineStatuses();
-                for (LineStatus lineStatus : lineStatuses) {
-                    Log.d(TAG, "doInBackground: from network: " + lineStatus.getName() + " " + lineStatus.getStatus());
-                }
-
-                MtaStatusDbService dbService = MtaStatusDbServiceSQLite.getInstance(MainActivity.this);
-                dbService.updateLineStatuses(lineStatuses);
-                // Make sure data can be saved in db and successfully retrieved
-                List<LineStatus> lineStatusesFromDb = dbService.getLineStatuses();
-
-                for (LineStatus lineStatus : lineStatusesFromDb) {
-                    Log.d(TAG, "doInBackground: from db: " + lineStatus.getName() + " " +
-                            lineStatus.getStatus() + " " +
-                            lineStatus.getFormattedDateTime("M/d/yy h:mma"));
-                }
-
-                return null;
-            }
-        }.execute();
-
     }
 }
