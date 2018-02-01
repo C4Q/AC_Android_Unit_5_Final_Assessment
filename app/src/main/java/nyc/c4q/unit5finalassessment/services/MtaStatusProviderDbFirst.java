@@ -52,8 +52,6 @@ public class MtaStatusProviderDbFirst implements MtaStatusProvider {
         @Override
         protected List<LineStatus> doInBackground(Boolean... booleans) {
 
-            Log.d(TAG, "doInBackground: hello from thread " + Thread.currentThread().getName());
-
             boolean forceUpdateFromNetwork = booleans[0];
 
             if (forceUpdateFromNetwork) {

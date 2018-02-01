@@ -1,4 +1,4 @@
-package nyc.c4q.unit5finalassessment;
+package nyc.c4q.unit5finalassessment.android;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
@@ -15,16 +15,21 @@ import nyc.c4q.unit5finalassessment.services.network.MtaStatusNetworkSvc;
 import nyc.c4q.unit5finalassessment.services.network.SimpleMtaStatusNetworkSvc;
 
 /**
+ * This service will refresh the app's MTA status data, then launch a notification showing some
+ * of that data.
+ * <p>
  * Created by charlie on 1/29/18.
  */
 
-public class SampleJobService extends JobService {
+public class MtaAlertJobService extends JobService {
 
-    private static final String TAG = "SampleJobService";
+    private static final String TAG = "MtaAlertJobService";
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
 
+        // Ideally these would be provided to the JobService via dependency injection,
+        // but that is an advanced topic that you should not worry too much about for now.
         MtaStatusNetworkSvc networkSvc = new SimpleMtaStatusNetworkSvc();
         MtaStatusDbService dbService = MtaStatusDbServiceSQLite.getInstance(this);
         MtaStatusProvider statusProvider = new MtaStatusProviderDbFirst(networkSvc, dbService);
@@ -38,6 +43,8 @@ public class SampleJobService extends JobService {
                                     lineStatus.getStatus() + " " +
                                     lineStatus.getFormattedDateTime("M/d/yy h:mma"));
 
+                            launchNotification(lineStatuses);
+
                             jobFinished(jobParameters, false);
                         }
                     }
@@ -48,5 +55,9 @@ public class SampleJobService extends JobService {
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         return false;
+    }
+
+    private void launchNotification(List<LineStatus> lineStatuses) {
+
     }
 }
