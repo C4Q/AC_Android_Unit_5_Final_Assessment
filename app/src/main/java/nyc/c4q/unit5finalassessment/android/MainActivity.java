@@ -6,9 +6,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import java.util.List;
+
 import nyc.c4q.unit5finalassessment.R;
+import nyc.c4q.unit5finalassessment.model.LineStatus;
+import nyc.c4q.unit5finalassessment.services.MtaStatusProvider;
+import nyc.c4q.unit5finalassessment.services.MtaStatusProviderDbFirst;
+import nyc.c4q.unit5finalassessment.services.database.MtaStatusDbServiceSQLite;
+import nyc.c4q.unit5finalassessment.services.network.SimpleMtaStatusNetworkSvc;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,12 +27,19 @@ public class MainActivity extends AppCompatActivity {
     private static final int JOB_INTERVAL = 30 * 60 * 1000; // 30 minutes in milliseconds
     private static final int JOB_INTERVAL_MAX = 60 * 60 * 1000; // 60 minutes in milliseconds
 
+    private MtaStatusProvider mtaStatusProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mtaStatusProvider = new MtaStatusProviderDbFirst(
+                new SimpleMtaStatusNetworkSvc(),
+                MtaStatusDbServiceSQLite.getInstance(this));
+
         scheduleMtaAlertJobService();
+
         setupRecyclerView();
     }
 
@@ -52,6 +68,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        //TODO
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+
+        final MtaStatusRvAdapter mtaStatusRvAdapter = new MtaStatusRvAdapter();
+        recyclerView.setAdapter(mtaStatusRvAdapter);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+
+        mtaStatusProvider.getMtaStatusesAsync(false,
+                new MtaStatusProvider.OnMtaStatusesReadyCallback() {
+            @Override
+            public void onMtaStatusesReady(List<LineStatus> lineStatuses) {
+                mtaStatusRvAdapter.updateData(lineStatuses);
+            }
+        });
     }
 }

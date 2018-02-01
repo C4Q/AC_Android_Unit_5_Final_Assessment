@@ -36,7 +36,7 @@ public class MtaAlertJobService extends JobService {
     private static final int NOTIFICATION_ID = 23456;
     private static final String NOTIFICATION_TITLE = "MTA Subway Status Alerts";
     private static final String NOTIFICATION_TEXT = "Current alerts:";
-    private static final String DATE_FORMAT_PATTERN = "M/d/yy h:mma";
+    public static final String DATE_FORMAT_PATTERN = "M/d/yy h:mma";
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
