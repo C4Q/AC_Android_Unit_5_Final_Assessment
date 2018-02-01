@@ -22,7 +22,7 @@ class MtaStatusRvAdapter extends RecyclerView.Adapter<MtaStatusRvAdapter.MtaStat
 
     private List<LineStatus> lineStatuses;
 
-    public MtaStatusRvAdapter() {
+    MtaStatusRvAdapter() {
         this.lineStatuses = new ArrayList<>();
     }
 
