@@ -12,6 +12,7 @@ import java.util.Locale;
 
 public class LineStatus {
     private static final String GOOD_SERVICE = "GOOD SERVICE";
+    private static final String TIME_NOT_AVAILABLE_MSG = "Time not available";
 
     private final String name, status, textHtml;
     private final long dateTimeInMillis;
@@ -51,7 +52,10 @@ public class LineStatus {
      * value for this instance
      * @see "https://developer.android.com/reference/java/text/SimpleDateFormat.html"
      */
-    public String getFormattedDateTime(String pattern) {
+    public String getFormattedDateTime(final String pattern) {
+        if (dateTimeInMillis == -1L) {
+            return TIME_NOT_AVAILABLE_MSG;
+        }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
         return simpleDateFormat.format(new Date(dateTimeInMillis));
     }

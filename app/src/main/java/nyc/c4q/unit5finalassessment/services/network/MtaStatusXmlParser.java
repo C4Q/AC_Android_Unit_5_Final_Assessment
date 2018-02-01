@@ -159,6 +159,8 @@ class MtaStatusXmlParser {
         if (tempDate != null && tempDate.length() > 0
                 && tempTime != null && tempTime.length() > 0) {
             // Use the date & time specific to that "line" object if available.
+            // Sometimes the time has a space in front, sometimes it doesn't - add one if needed
+            tempTime = (tempTime.charAt(0) != ' ') ? " " + tempTime : tempTime;
             return parseDateTimeString(tempDate + tempTime, "MM/dd/yyyy hh:mma");
         } else {
             // If not available, use the timestamp from the start of the XML file.

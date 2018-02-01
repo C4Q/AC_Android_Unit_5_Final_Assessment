@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private static final int MTA_ALERT_JOB_ID = 123;
-    private static final int JOB_INTERVAL = 30 * 1000; // 30 minutes in milliseconds
+    private static final int JOB_INTERVAL = 30 * 60 * 1000; // 30 minutes in milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
